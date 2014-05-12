@@ -1,4 +1,5 @@
 # chargement du dataset British Election Study 2010
+library(foreign)
 BES2010 <- read.spss(normalizePath("./data/2010BESPreandPost.sav"), to.data.frame=TRUE, use.value.labels=TRUE)
 
 # préparation du dataset
@@ -28,3 +29,4 @@ screenreg(list(regBES, regBES2))
 
 exp(coefficients(regBES))
 exp(coefficients(regBES2))
+screenreg(list(regBES, regBES2), ci.force=TRUE)

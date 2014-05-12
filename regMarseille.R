@@ -73,7 +73,7 @@ summary(modele1)
 
 library(texreg)
 # l'option single.row permet de faire tenir le coefficient et son erreur-type sur la même ligne
-screenreg(modele1, single.row=TRUE)
+screenreg(modele1)
 
 
 # on peut ensuite analyser un élément donné du modèle, par exemple les résidus
@@ -83,8 +83,8 @@ plot(density(modele1$residuals))
 # une altenative avec ggplot2
 library(ggplot2)
 # fortify permet de transformer l'objet lm en dataframe utilisable par ggplot2
-# ggmodele1 <- fortify(modele1)
-# ggplot(modele1, aes(x=.resid)) + geom_density() + theme_bw()
+ggmodele1 <- fortify(modele1)
+ggplot(modele1, aes(x=.resid)) + geom_density(color="blue") + theme_bw()
 
 # ou encore les valeurs prédites (fitted values), par exemple 
 # on charge le fonds de carte de Marseille
@@ -115,6 +115,10 @@ ggplot(ggmarseilleSHP, aes(x=long, y=lat, group=group)) + geom_polygon(aes(fill=
 
 modele2 <- lm(Ravier ~ CS2 + CS3 + CS4 + CS5 + CS6*etrangers + CS6*chomage + HLM, data = marseille)
 screenreg(list(modele1, modele2))
+
+
+newdata <- expand.grid(CS6 = quantile(marseille$CS6, probs=seq(0,1,length.out=10), na.rm=TRUE), CS2 = mean(marseille$CS2, na.rm=TRUE), CS3 = mean(marseille$CS3, na.rm=TRUE), CS4 = mean(marseille$CS4, na.rm=TRUE), CS5 = mean(marseille$CS5, na.rm=TRUE), etrangers = quantile(marseille$etrangers, probs=seq(0,1,0.25), na.rm=TRUE), chomage = mean(marseille$chomage, na.rm=TRUE), HLM = mean(marseille$HLM, na.rm=TRUE))
+newdata$predict <- predict(modele2, newdata=newdata)
 
 # modèle avec prise en compte des arrondissements
 
