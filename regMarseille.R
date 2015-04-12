@@ -1,49 +1,54 @@
 # chargement des packages utiles
 
+# install.packages("dplyr")
 library(dplyr)
 
 # Chargement des données 
 
 # normalisePath ets utilisé pour que le chemin soit valable quel que soit le système d'exploitation (Win, MacOS, Unix)
-bvINSEE <- read.csv(normalizePath("./data/bvINSEE2012.csv"), sep=";", stringsAsFactors=FALSE)
+bvINSEE <- read.csv(normalizePath("./data/bvINSEE2012.csv"), sep=";", stringsAsFactors=FALSE, check.names = FALSE)
 # les identifiants des bureaux de vote sont codés différemment dans les deux jeux de données, on harmonise cela
 bvINSEE$BUREAU_ID <- gsub("_", "", bvINSEE$BUREAU_ID)
-marseille <- read.csv(normalizePath("./data/complet_par_bureaux.csv"), sep=",", stringsAsFactors=FALSE)
+marseille <- read.csv(normalizePath("./data/complet_par_bureaux.csv"), sep=",", stringsAsFactors=FALSE, check.names = FALSE)
 
 marseille <- tbl_df(marseille)
 
 # Nettoyage des données
 
-marseille <- marseille %.% mutate( # on met les numéros de BV au bon format
-  BUREAU_ID = paste("132",substr(sprintf("%04.0f",bdv), 1, 2), sprintf("%04.0f",bdv), sep=""),
-  Inscrits = inscrits,
-  Abstention = inscrits - Nuls - Total.Résultat,
-  Exprimés = Total.Résultat,
-  Diouf = CHANGER.LA.DONNE,
-  AEI = ALLIANCE.ECOLOGISTE.INDEPENDANTE,
-  POI = LISTE.D.UNITE.ET.DE.RESISTANCE.CONTRE.LA.POLITIQUE.DU.GOUVERNEMENT.ET.DE.L.U.E.SOUTENUE.PAR.LE.POI,
-  Coppola = MARSEILLE.A.GAUCHE..L.HUMAIN.D.ABORD.DANS.NOTRE.VILLE,
-  Assante = MARSEILLE.A.VIVRE,
-  Ravier = MARSEILLE.BLEU.MARINE,
-  Gaudin = MARSEILLE.EN.AVANT.AVEC.JEAN.CLAUDE.GAUDIN,
-  MarseilleEnsemble = MARSEILLE.ENSEMBLE,
-  Persia = MARSEILLE.J.Y.CROIS,
-  MarseillePopulaire = MARSEILLE.POPULAIRE,
-  MarseilleUnie = MARSEILLE.UNIE,
-  Mennucci = UN.NOUVEAU.CAP.POUR.LES.MARSEILLAIS.AVEC.PATRICK.MENNUCCI,
-  Qualite = UNE.QUALITE.DE.VIE.POUR.TOUS,
-  UnionMarseille = UNION.POUR.MARSEILLE)
+marseille <- marseille %>%
+  mutate( # on met les numéros de BV au bon format
+    BUREAU_ID = paste0("132", substr(sprintf("%04.0f",bdv), 1, 2), sprintf("%04.0f",bdv)),
+    Inscrits = inscrits,
+    Abstention = inscrits - Nuls - `Total Résultat`,
+    Exprimés = `Total Résultat`,
+    Diouf = `CHANGER LA DONNE`,
+    AEI = `ALLIANCE ECOLOGISTE INDEPENDANTE`,
+    POI = `LISTE D UNITE ET DE RESISTANCE CONTRE LA POLITIQUE DU GOUVERNEMENT ET DE L U.E SOUTENUE PAR LE POI`,
+    Coppola = `MARSEILLE A GAUCHE, L HUMAIN D ABORD DANS NOTRE VILLE`,
+    Assante = `MARSEILLE A VIVRE`,
+    Ravier = `MARSEILLE BLEU MARINE`,
+    Gaudin = `MARSEILLE EN AVANT AVEC JEAN-CLAUDE GAUDIN`,
+    MarseilleEnsemble = `MARSEILLE ENSEMBLE`,
+    Persia = `MARSEILLE J Y CROIS`,
+    MarseillePopulaire = `MARSEILLE POPULAIRE`,
+    MarseilleUnie = `MARSEILLE UNIE`,
+    Mennucci = `UN NOUVEAU CAP POUR LES MARSEILLAIS AVEC PATRICK MENNUCCI`,
+    Qualite = `UNE QUALITE DE VIE POUR TOUS`,
+    UnionMarseille = `UNION POUR MARSEILLE`
+  )
+# quand une cellule est vide : mettre une valeur égale à zéro
 marseille[is.na(marseille)] <- 0
 
 # On transforme les résultats en % des inscrits
 
-marseille <- marseille %.% mutate(Nuls = Nuls / Inscrits * 100,
-                                  Abstention = Abstention / Inscrits * 100,
-                                  Diouf = Diouf / Inscrits * 100,
-                                  Coppola = Coppola / Inscrits * 100,
-                                  Ravier = Ravier / Inscrits * 100,
-                                  Gaudin = Gaudin / Inscrits * 100,
-                                  Mennucci = Mennucci / Inscrits * 100)
+marseille <- marseille %>% 
+  mutate(Nuls = Nuls / Inscrits * 100,
+         Abstention = Abstention / Inscrits * 100,
+         Diouf = Diouf / Inscrits * 100,
+         Coppola = Coppola / Inscrits * 100,
+         Ravier = Ravier / Inscrits * 100,
+         Gaudin = Gaudin / Inscrits * 100,
+         Mennucci = Mennucci / Inscrits * 100)
 
 # on fusionne les résultats électoraux avec les données de l'INSEE
 
@@ -51,15 +56,16 @@ marseille <- left_join(marseille, bvINSEE, by = "BUREAU_ID")
 
 # on transforme les données INSEE en %
 
-marseille <- marseille %.% mutate(CS1 = C09_ACT1564_CS1 / P09_POP1564 * 100,
-                                  CS2 = C09_ACT1564_CS2 / P09_POP1564 * 100,
-                                  CS3 = C09_ACT1564_CS3 / P09_POP1564 * 100,
-                                  CS4 = C09_ACT1564_CS4 / P09_POP1564 * 100,
-                                  CS5 = C09_ACT1564_CS5 / P09_POP1564 * 100,
-                                  CS6 = C09_ACT1564_CS6 / P09_POP1564 * 100,
-                                  etrangers = P09_POP_ETR / P09_POP * 100,
-                                  chomage = P09_CHOM1564 / P09_POP1564 * 100,
-                                  HLM = P09_NPER_RP_LOCHLMV / P09_POP * 100)
+marseille <- marseille %>%
+  mutate(CS1 = C09_ACT1564_CS1 / P09_POP1564 * 100,
+         CS2 = C09_ACT1564_CS2 / P09_POP1564 * 100,
+         CS3 = C09_ACT1564_CS3 / P09_POP1564 * 100,
+         CS4 = C09_ACT1564_CS4 / P09_POP1564 * 100,
+         CS5 = C09_ACT1564_CS5 / P09_POP1564 * 100,
+         CS6 = C09_ACT1564_CS6 / P09_POP1564 * 100,
+         etrangers = P09_POP_ETR / P09_POP * 100,
+         chomage = P09_CHOM1564 / P09_POP1564 * 100,
+         HLM = P09_NPER_RP_LOCHLMV / P09_POP * 100)
 
 # enfin, on estime le modèle
 
@@ -71,6 +77,7 @@ summary(modele1)
 
 # on regarde les résultats du modèle, avec une interface plus lisible
 
+# install.packages("texreg")
 library(texreg)
 # l'option single.row permet de faire tenir le coefficient et son erreur-type sur la même ligne
 screenreg(modele1)
@@ -104,7 +111,12 @@ new_theme_empty$plot.title <- element_blank()
 new_theme_empty$axis.title <- element_blank()
 new_theme_empty$plot.margin <- structure(c(0, 0, -1, -1), unit = "lines", valid.unit = 3L, class = "unit")
 
-ggplot(ggmarseilleSHP, aes(x=long, y=lat, group=group)) + geom_polygon(aes(fill=pred)) + coord_fixed() + scale_fill_gradient(guide="legend", name="Valeurs prédites", low="white", high="blue") + labs(x=NULL, y=NULL) + new_theme_empty
+ggplot(ggmarseilleSHP, aes(x=long, y=lat, group=group)) + 
+  geom_polygon(aes(fill=pred)) + 
+  coord_fixed() + 
+  scale_fill_gradient(guide="legend", name="Valeurs prédites", low="white", high="blue") + 
+  labs(x=NULL, y=NULL) + 
+  new_theme_empty
 
 
 # même carte mais avec les résidus
@@ -119,6 +131,7 @@ screenreg(list(modele1, modele2))
 
 newdata <- expand.grid(CS6 = quantile(marseille$CS6, probs=seq(0,1,length.out=10), na.rm=TRUE), CS2 = mean(marseille$CS2, na.rm=TRUE), CS3 = mean(marseille$CS3, na.rm=TRUE), CS4 = mean(marseille$CS4, na.rm=TRUE), CS5 = mean(marseille$CS5, na.rm=TRUE), etrangers = quantile(marseille$etrangers, probs=seq(0,1,0.25), na.rm=TRUE), chomage = mean(marseille$chomage, na.rm=TRUE), HLM = mean(marseille$HLM, na.rm=TRUE))
 newdata$predict <- predict(modele2, newdata=newdata)
+
 
 # modèle avec prise en compte des arrondissements
 
