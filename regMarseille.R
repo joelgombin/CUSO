@@ -128,10 +128,19 @@ ggplot(ggmarseilleSHP, aes(x=long, y=lat, group=group)) + geom_polygon(aes(fill=
 modele2 <- lm(Ravier ~ CS2 + CS3 + CS4 + CS5 + CS6*etrangers + CS6*chomage + HLM, data = marseille)
 screenreg(list(modele1, modele2))
 
+## attention : ce modèle présente une forte multicollinéarité !
+
 
 newdata <- expand.grid(CS6 = quantile(marseille$CS6, probs=seq(0,1,length.out=10), na.rm=TRUE), CS2 = mean(marseille$CS2, na.rm=TRUE), CS3 = mean(marseille$CS3, na.rm=TRUE), CS4 = mean(marseille$CS4, na.rm=TRUE), CS5 = mean(marseille$CS5, na.rm=TRUE), etrangers = quantile(marseille$etrangers, probs=seq(0,1,0.25), na.rm=TRUE), chomage = mean(marseille$chomage, na.rm=TRUE), HLM = mean(marseille$HLM, na.rm=TRUE))
 newdata$predict <- predict(modele2, newdata=newdata)
 
+newdata %>%
+  ggplot(aes(x = CS6, y = predict, group = etrangers)) +
+  geom_line(aes(color = as.factor(etrangers))) +
+  scale_color_discrete(name = "proportion d'étranegrs", labels = c("minimum", "1er quartile", "2e quartile", "3e quartile", "maximum")) +
+  xlab("Ouvriers") +
+  ylab("Score FN prédit") +
+  theme_bw()
 
 # modèle avec prise en compte des arrondissements
 
