@@ -36,3 +36,7 @@ plot(acp1, choix="var", axes=c(1,3))
 # description des axes 1 à 3
 dimdesc(acp1)
 
+
+classes <- kmeans(df, centers=3)
+classes2 <- kmeans(df, centers=3)
+classes3 <- kmeans(df, centers=3)

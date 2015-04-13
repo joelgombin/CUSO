@@ -16,7 +16,7 @@ ac1 <- CA(table(FES2012[, c("v3", "sd46")]), graph=FALSE)
 barplot(ac1$eig[,2], names.arg=row.names(ac1$eig))
 
 # on représente le plan factoriel
-plot(ac1)
+plot(ac1, autoLab="no")
 
 # on peut caractériser les facteurs
 desc <- dimdesc(ac1, axes=1:2)
@@ -35,7 +35,7 @@ acm1 <- MCA(FES2012[,c("h1", "v3", "sd46", "sd14_pcs")], quali.sup=2, graph=FALS
 barplot(acm1$eig[1:5,2], names.arg=row.names(acm1$eig[1:5,]))
 
 # représentation du nuage de modalités dans le premier plan factoriel
-plot(acm1, invisible="ind")
+plot(acm1, invisible="ind", autoLab="no")
 
 # caractériser les facteurs
 desc <- dimdesc(acm1, axes=1:2)
