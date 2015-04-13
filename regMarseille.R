@@ -150,7 +150,7 @@ modele3 <- lmer(Ravier ~ CS2 + CS3 + CS4 + CS5 + CS6*etrangers + CS6*chomage + H
 
 screenreg(list(modele1, modele2, modele3))
 
-modele4 <- lmer(Ravier ~ CS2 + CS3 + CS4 + CS5 + CS6*etrangers + CS6*chomage + HLM + (0 + CS6 | arrdt), data = marseille)
+modele4 <- lmer(Ravier ~ CS2 + CS3 + CS4 + CS5 + HLM + (0 + CS6 | arrdt), data = marseille)
 
 screenreg(list(modele1, modele2, modele3, modele4))
 
