@@ -9,7 +9,7 @@ library(dplyr)
 bvINSEE <- read.csv(normalizePath("./data/bvINSEE2012.csv"), sep=";", stringsAsFactors=FALSE, check.names = FALSE)
 # les identifiants des bureaux de vote sont codés différemment dans les deux jeux de données, on harmonise cela
 bvINSEE$BUREAU_ID <- gsub("_", "", bvINSEE$BUREAU_ID)
-marseille <- read.csv(normalizePath("./data/complet_par_bureaux.csv"), sep=",", stringsAsFactors=FALSE, check.names = FALSE)
+marseille <- read.csv(normalizePath("./data/complet_par_bureaux.csv"), sep=",", stringsAsFactors=FALSE, check.names = FALSE, fileEncoding = "UTF-8")
 
 marseille <- tbl_df(marseille)
 
