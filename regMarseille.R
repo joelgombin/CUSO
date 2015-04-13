@@ -138,7 +138,7 @@ newdata$predict <- predict(modele2, newdata=newdata)
 newdata %>%
   ggplot(aes(x = CS6, y = predict, group = etrangers)) +
   geom_line(aes(color = as.factor(etrangers))) +
-  scale_color_discrete(name = "proportion d'étranegrs", labels = c("minimum", "1er quartile", "2e quartile", "3e quartile", "maximum")) +
+  scale_color_discrete(name = "proportion d'étrangers", labels = c("minimum", "1er quartile", "2e quartile", "3e quartile", "maximum")) +
   xlab("Ouvriers") +
   ylab("Score FN prédit") +
   theme_bw()
