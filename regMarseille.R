@@ -146,14 +146,19 @@ newdata %>%
 # modèle avec prise en compte des arrondissements
 
 marseille$arrdt <- substr(marseille$BUREAU_ID, 4,5)
+# install.packages("lme4")
 library(lme4)
-modele3 <- lmer(Ravier ~ CS2 + CS3 + CS4 + CS5 + CS6*etrangers + CS6*chomage + HLM + (1 | arrdt), data = marseille)
+modele3 <- lmer(Ravier ~ CS2 + CS4 + CS5 + CS6 + etrangers + chomage + HLM + (1 | arrdt), data = marseille)
 
 screenreg(list(modele1, modele2, modele3))
 
 modele4 <- lmer(Ravier ~ CS2 + CS3 + CS4 + CS5 + HLM + (0 + CS6 | arrdt), data = marseille)
 
 screenreg(list(modele1, modele2, modele3, modele4))
+
+modele5 <- lmer(Ravier ~ CS2 + CS3 + CS4 + CS5 + HLM + (1 + CS6 | arrdt), data = marseille)
+
+screenreg(list(modele1, modele2, modele3, modele4, modele5))
 
 ranef(modele3)
 ranef(modele4)
