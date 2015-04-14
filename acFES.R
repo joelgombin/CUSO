@@ -43,3 +43,11 @@ desc
 
 
 ## Exercice : explorer d'autres dimensions du jeu de données FES2012, en utilisant le codebook (dans le dossier data) pour repérer les variables intéressantes. 
+
+
+## CAH
+
+hcpc <- HCPC(acm1, nb.clust=-1, graph=FALSE)
+plot(hcpc, choice = "tree", tree.barplot=FALSE)
+plot(hcpc, choice = "map", tree.barplot=TRUE, draw.tree = TRUE, ind.names = FALSE)
+
