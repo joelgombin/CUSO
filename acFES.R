@@ -36,7 +36,7 @@ barplot(acm1$eig[1:5,2], names.arg=row.names(acm1$eig[1:5,]))
 
 # représentation du nuage de modalités dans le premier plan factoriel
 plot(acm1, invisible="ind", autoLab="no")
-
+plot(acm1, invisible="ind", autoLab="no", selectMod = "contrib 5")
 # caractériser les facteurs
 desc <- dimdesc(acm1, axes=1:2)
 desc
