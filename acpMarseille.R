@@ -39,6 +39,20 @@ dimdesc(acp1)
 df <- as.data.frame(df)
 df <- na.omit(df)
 
+# K-means
+
 classes <- kmeans(df, centers=3)
 classes2 <- kmeans(df, centers=3)
 classes3 <- kmeans(df, centers=3)
+
+classes
+classes$centers
+
+
+df$classes1 <- as.factor(classes$cluster)
+df$classes2 <- as.factor(classes2$cluster)
+df$classes3 <- as.factor(classes3$cluster
+
+acp2 <- PCA(df, quali.sup = 15:18, graph = FALSE)
+plot.PCA(acp2, choix = "ind", habillage = 16, label = c("quali"))
+plot.PCA(acp2, choix = "ind", habillage = 16, label = c("quali"), axes = c(1, 3))
